@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User2;
@@ -18,21 +17,22 @@ class AuthController extends Controller
             'Email' => 'required|string|email|max:255|unique:users2',
             'phone' => 'required|string|max:20',
             'password' => 'required|string|min:8',
-            'userTypeId_fk' => 'required|integer', // Assuming this is the foreign key for user type
+            'userTypeId_fk' => 'required|integer',
         ]);
 
         $user = User2::create([
             'userName' => $request->userName,
-            'LastName1' => $request->userLastName1,
-            'LastName2' => $request->userLastName2 ?? null, // Assuming this field is optional
-            'Email' => $request->userEmail,
-            'phone' => $request->userPhone,
-            'password' => Hash::make($request->userPassword),
+            'LastName1' => $request->LastName1,
+            'LastName2' => $request->LastName2 ?? null,
+            'Email' => $request->Email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
             'userTypeId_fk' => $request->userTypeId_fk,
         ]);
 
         return response()->json(['message' => 'User created successfully'], 201);
     }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -42,7 +42,6 @@ class AuthController extends Controller
 
         Log::info('Attempting login for userName: ' . $request->userName);
 
-        // Recuperar el usuario por userName
         $user = User2::where('userName', $request->userName)->first();
 
         if (!$user) {
@@ -50,30 +49,29 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid login details'], 401);
         }
 
-
-        $passwordCheck = Hash::check($request->password, $user->password);
-        // Log::warning('Password check for user: ' . $request->userName . '. Provided: ' . $request->password . ' Encrypted: ' . $user->password . ' Result: ' . ($passwordCheck ? 'Match' : 'Mismatch'));
-
-        if (!$passwordCheck) {
+        if (!Hash::check($request->password, $user->password)) {
+            Log::warning('Invalid password for user: ' . $request->userName);
             return response()->json(['message' => 'Invalid login details'], 401);
         }
 
-        // Autenticar al usuario
-        Auth::login($user);
+        $token = $user->createToken('MyAppToken')->plainTextToken;
 
-        Log::info('Login successful for user: ' . $request->userName);
-        return response()->json(Auth::user());
+        return response()->json([
+            'token' => $token,
+            'user' => $user
+        ]);
     }
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        Log::info('Authenticated user:', ['user' => Auth::user()]);
+        return response()->json(Auth::user());
     }
 }
