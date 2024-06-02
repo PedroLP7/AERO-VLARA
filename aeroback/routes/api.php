@@ -26,6 +26,6 @@ Route::get('/prueba', [PruebaController::class, 'index']);
 
 
 Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('register', [AuthController::class, 'register']);
 Route::get('user', [AuthController::class, 'user'])->middleware('auth:sanctum');

@@ -11,15 +11,15 @@ axios.defaults.baseURL = 'http://localhost:8000';
 
 
 // Configura Axios para incluir el token en cada solicitud si está disponible
-// axios.interceptors.request.use(config => {
-//   const token = localStorage.getItem('authToken');
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// }, error => {
-//   return Promise.reject(error);
-// });
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 
 

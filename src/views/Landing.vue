@@ -46,9 +46,20 @@ export default {
       }
     },
     async logout() {
+      try {
+        // const token = localStorage.getItem('authToken'); 
+        const response = await axios.post('/api/logout');
+        console.log('Logout successful:', response.data);
+      } catch (error) {
+        console.error('Error logging out:', error.message);
+      }
+    
+      
+       
       localStorage.removeItem('authToken'); // Elimina el token de localStorage
       this.$router.push('/'); // Redirige al usuario a la página de inicio
     },
+    
     
   },
 };

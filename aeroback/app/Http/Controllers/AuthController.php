@@ -62,12 +62,30 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out successfully']);
+
+
+public function logout(Request $request)
+{
+    Log::info('Attempting logout for user:', ['user' => $request->user()]);
+    // Verificar si hay un usuario autenticado
+    if (Auth::guard('sanctum')->check()) {
+        // Invalidar todos los tokens del usuario
+        $user = $request->user();
+        $user->tokens()->delete();
+
+        Log::info('User logged out:', ['user' => $user]);
+
+        return response()->json(['message' => 'Successfully logged out']);
+    } else {
+        // El usuario no está autenticado, probablemente ya esté desconectado
+        return response()->json(['message' => 'User is not authenticated'], 401);
     }
+}
+
+
+
+
 
     public function user(Request $request)
     {
