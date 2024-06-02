@@ -1,14 +1,22 @@
 <template>
-  <div>
-    <form @submit.prevent="login">
-      <input type="text" v-model="userName" placeholder="Username" required />
-      <input type="password" v-model="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <div v-if="errorMessage">{{ errorMessage }}</div>
+  
 
-    <button @click="logout">Logout</button>
+
+
+
+  <form @submit.prevent="login">
+  <div class="mb-3">
+    <label for="userName" class="form-label">User Name</label>
+    <input type="text" v-model="userName" class="form-control" id="userName" aria-describedby="emailHelp">
+    
   </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" v-model="password" class="form-control" id="exampleInputPassword1">
+  </div>
+ 
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 </template>
 
 <script>
@@ -20,6 +28,8 @@ export default {
       userName: '',
       password: '',
       errorMessage: '',
+      logedIn: false,
+      //gestionar el loggeo , igual hay que meter vuex
     };
   },
   methods: {
@@ -34,7 +44,8 @@ export default {
         // Almacenar solo el token como una cadena
         localStorage.setItem('authToken', response.data.token);
 
-        this.$router.push('/index'); // Redirige al usuario a la página de inicio
+        this.$router.push('/home'); // Redirige al usuario a la página de inicio
+        this.logedIn = true;
       } catch (error) {
         if (error.response) {
           console.error('Error logging in:', error.response.data);

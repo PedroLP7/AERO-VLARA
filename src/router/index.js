@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Landing from '../views/Landing.vue'
-import IndexView from '@/views/IndexView.vue'
+import Login from '../views/Login.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Landing
+      name: 'login',
+      component: Login
     },
     // {
     //   path: '/about',
@@ -20,9 +20,9 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue')
     // },
     {
-      path: '/index',
-      name: 'index',
-      component: IndexView,
+      path: '/home',
+      name: 'home',
+      component: HomeView,
       meta: { requiresAuth: true }
     }
 
